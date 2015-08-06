@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  padding: 10px;
+  background-color: #000; }
+
+.prompt {
+  position: relative;
+  z-index: 10;
+  color: red;
+  font-family: "Roboto Mono";
+  font-size: 18px;
+  -webkit-animation: prompt 80ms infinite;
+  animation: prompt 80ms infinite;
+  text-shadow: 0 0 2px red; }
+  .prompt:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    background: -webkit-repeating-linear-gradient(top, transparent 0px, transparent 1px, rgba(0, 0, 0, 0.25) 1px, rgba(0, 0, 0, 0.25) 2px);
+    -webkit-background-size: 100% 2px;
+    background: -moz-repeating-linear-gradient(top, transparent 0px, transparent 1px, rgba(0, 0, 0, 0.25) 1px, rgba(0, 0, 0, 0.25) 2px);
+    -moz-background-size: 100% 2px; }
+  .prompt .line.active:after, .prompt .line.input:after {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    margin-bottom: -1px;
+    background-color: red;
+    margin-left: 2px; }
+  .prompt .line.input:after {
+    margin-left: 0px;
+    -webkit-animation: blink 0.7s infinite;
+    animation: blink 0.7s infinite; }
+
+@-webkit-keyframes prompt {
+  0% {
+    opacity: 0.75; }
+  50% {
+    opacity: 1; } }
+@keyframes prompt {
+  0% {
+    opacity: 0.75; }
+  50% {
+    opacity: 1; } }
+@-webkit-keyframes blink {
+  0% {
+    opacity: 1; }
+  49% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  99% {
+    opacity: 0; } }
+@keyframes blink {
+  0% {
+    opacity: 1; }
+  49% {
+    opacity: 1; }
+  50% {
+    opacity: 0; }
+  99% {
+    opacity: 0; } }
+
+/*# sourceMappingURL=styles.css.map */
