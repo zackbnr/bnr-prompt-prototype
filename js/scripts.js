@@ -2,8 +2,9 @@ $(function() {
 
     var prompt = {
 
-        defaults: {
+        options: {
             typeSpeed: 75,
+            distortionSpeed: 200
         },
 
         distortionChars: ['&#8709;', '&#8704;', '&#916;', '&#8364;', '&#915;', '&#174;', 'Z', 'X'],
@@ -34,7 +35,7 @@ $(function() {
         print: function(arr, speed) {
             this.distorting = true; // dont distort while we write
             this.input = false;
-            var speed = speed || this.defaults.typeSpeed;
+            var speed = speed || this.options.typeSpeed;
             this.printStep(arr, speed, this);
         },
 
@@ -90,12 +91,12 @@ $(function() {
                         self.distorting = false;
                     }, 500);
                 }
-            }, 200);
+            }, self.options.distortionSpeed);
         }
 
     };
 
     prompt.init();
-    prompt.print(['Hello World', 'This is a test', 'Please don\'t vomit'], 30);
+    prompt.print(['Hello World', 'This is a test'], 30);
 
 });
