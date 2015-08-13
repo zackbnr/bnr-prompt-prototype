@@ -26,6 +26,8 @@ body {
     -moz-background-size: 100% 2px; }
   .prompt .line {
     min-height: 1em; }
+  .prompt .line.input {
+    color: #FFF; }
   .prompt .line.active:after, .prompt .line.input:after {
     content: "";
     display: inline-block;
