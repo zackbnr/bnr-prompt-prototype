@@ -7,7 +7,7 @@ body
     z-index: 10
     color: red
     font-family: 'Roboto Mono'
-    font-size: 18px
+    font-size: 16px
     -webkit-animation: prompt 80ms infinite
     animation: prompt 80ms infinite
     text-shadow: 0 0 2px red
@@ -23,6 +23,8 @@ body
         -webkit-background-size: 100% 2px
         background: -moz-repeating-linear-gradient(top,transparent 0px,transparent 1px,rgba(0,0,0,0.25) 1px,rgba(0,0,0,0.25) 2px)
         -moz-background-size: 100% 2px
+    .line
+        min-height: 1em
     .line.active:after, .line.input:after
         content: ''
         display: inline-block
