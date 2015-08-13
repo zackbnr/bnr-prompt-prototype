@@ -20,15 +20,39 @@ $(function() {
         initInput: function() {
             var self = this;
             window.onkeydown = function(e) {
-                // TODO: update this to only prevent for a few buttons
-                e.preventDefault();
+
                 if (!self.input) return false;
+
                 var k = e.which || e.keyCode;
-                // TODO: check for enter & other keys
-                var input = $('.prompt .input');
-                var text = input.text();
-                text = text + String.fromCharCode(k);
-                input.text(text);
+                var cancel = false;
+
+                if (e.ctrlKey || e.altKey || e.metaKey) {
+                    cancel = true;
+                }
+                if (k == 9 || k == 38 || k == 40 || k == 37 || k == 39 || k == 91) {
+                    cancel = true;
+                }
+
+                // delete - 8
+                // enter - 13
+
+                if (!cancel) {
+                    e.preventDefault();
+                    if (k == 13) {
+                        // enter command
+                    } else if (k == 8) {
+                        var input = $('.prompt .input');
+                        var text = input.text();
+                        text = text.substr(0, text.length - 1);
+                        input.text(text);
+                    } else {
+                        var input = $('.prompt .input');
+                        var text = input.text();
+                        text = text + String.fromCharCode(k);
+                        input.text(text);
+                    }
+                }
+
             };
         },
 
