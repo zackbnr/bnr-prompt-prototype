@@ -3,14 +3,15 @@ $(function() {
     var prompt = {
 
         options: {
-            typeSpeed: 75,
-            distortionSpeed: 200
+            typeSpeed: 25,
+            distortionSpeed: 100
         },
 
         distortionChars: ['&#8709;', '&#8704;', '&#916;', '&#8364;', '&#915;', '&#174;', 'Z', 'X'],
         distorting: false,
 
         input: true,
+        inputStr: '',
 
         init: function() {
             this.distort();
@@ -33,9 +34,6 @@ $(function() {
                     cancel = true;
                 }
 
-                // delete - 8
-                // enter - 13
-
                 if (!cancel) {
                     e.preventDefault();
                     if (k == 13) {
@@ -45,11 +43,13 @@ $(function() {
                         var text = input.text();
                         text = text.substr(0, text.length - 1);
                         input.text(text);
+                        self.inputStr = text;
                     } else {
                         var input = $('.prompt .input');
                         var text = input.text();
                         text = text + String.fromCharCode(k);
                         input.text(text);
+                        self.inputStr = text;
                     }
                 }
 
@@ -57,23 +57,33 @@ $(function() {
         },
 
         print: function(arr, speed) {
-            this.distorting = true; // dont distort while we write
-            this.input = false;
-            var speed = speed || this.options.typeSpeed;
-            this.printStep(arr, speed, this);
+            var self = this;
+            var speed = speed || self.options.typeSpeed;
+            if (!!$('.input').length) {
+                $('.input').remove();
+            }
+            return new Promise(function(resolve, reject) {
+                self.distorting = true; // dont distort while we write
+                self.input = false;
+                self.printStep(arr, speed, self, resolve);
+            });
         },
 
-        printStep: function(que, speed, prompt) {
+        printStep: function(que, speed, prompt, resolve) {
             var line = que.shift();
             if (!line) {
                 // print stack is done
                 prompt.distorting = false;
                 prompt.input = true;
                 $('.prompt').append('<div class="line input"></div>');
+                if (!!prompt.inputStr) {
+                    $('.input').text(prompt.inputStr);
+                }
+                resolve();
                 return false;
             }
             prompt.printLine(line, function() {
-                prompt.printStep(que, speed, prompt)
+                prompt.printStep(que, speed, prompt, resolve)
             }, speed);
         },
 
@@ -103,24 +113,54 @@ $(function() {
                     var lines = $('.prompt .output');
                     var rand2 = Math.floor(Math.random() * lines.length);
                     var line = lines.eq(rand2);
-                    var ogText = line.text();
-                    var letters = ogText.split('');
-                    var rand3 = Math.floor(Math.random() * letters.length);
-                    var rand4 = Math.floor(Math.random() * self.distortionChars.length);
-                    letters[rand3] = self.distortionChars[rand4];
-                    var newText = letters.join('');
-                    line.html(newText);
-                    setTimeout(function() {
-                        line.html(ogText);
-                        self.distorting = false;
-                    }, 500);
+                    if (line.text() !== ' ') {
+                        var ogText = line.text();
+                        var letters = ogText.split('');
+                        var rand3 = Math.floor(Math.random() * letters.length);
+                        var rand4 = Math.floor(Math.random() * self.distortionChars.length);
+                        letters[rand3] = self.distortionChars[rand4];
+                        var newText = letters.join('');
+                        line.html(newText);
+                        setTimeout(function() {
+                            line.html(ogText);
+                            self.distorting = false;
+                        }, 500);
+                    }
                 }
             }, self.options.distortionSpeed);
         }
 
     };
 
+    // helper function
+    var pause = function(duration) {
+        return new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                resolve();
+            }, duration);
+        });
+    };
+
     prompt.init();
-    prompt.print(['Hello World', 'This is a test'], 30);
+
+    prompt.print([
+        'Welcome to Black and Red.',
+        'We are a group of talented web designers and developers with a knack for immaculate code.'
+    ])
+    .then(function() {
+        return pause(500);
+    })
+    .then(function() {
+        return prompt.print([
+            ' ',
+            'If you are reading this sentence then you have already passed initial authorization.'
+        ]);
+    })
+    .then(function() {
+        return pause(300);
+    })
+    .then(function() {
+        return prompt.print(['Please provide your full name:', ' '])
+    });
 
 });
