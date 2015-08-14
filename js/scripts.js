@@ -123,6 +123,10 @@ $(function() {
         },
 
         printLine: function(str, callback, speed) {
+            var self = this;
+            var p = $('.prompt');
+            console.log('p.scrollTop()', p.scrollTop());
+            console.log('p.height()', p.height());
             $('.prompt').append('<div class="line output active"></div>');
             var line = $('.prompt .line').last();
             var letters = str.split('');
@@ -133,6 +137,7 @@ $(function() {
                     line.css('padding-left', '50px');
                 } else {
                     line.text(text + letters[i]);
+                    self.scroll();
                 }
                 i++;
                 if (i === letters.length) {
@@ -141,6 +146,17 @@ $(function() {
                     callback();
                 }
             }, speed);
+        },
+
+        // helper function to move the lines up the screen
+        scroll: function() {
+            var p = $('.prompt');
+            var w = $(window);
+            if (p.height() > w.height()) {
+                var diff = p.height() - w.height();
+                console.log('diff', diff);
+                p.css('margin-top', diff + 'px');
+            }
         },
 
         distort: function() {
@@ -182,65 +198,68 @@ $(function() {
 
     prompt.init();
 
-    prompt.print(['Welcome to Black and Red.', 'We are a group of talented web designers and developers with a knack for immaculate code.'])
-    .then(function() {
-        return pause(500);
-    })
-    .then(function() {
-        return prompt.print([' ', 'If you are reading this sentence then you have already passed initial authorization.']);
-    })
-    .then(function() {
-        return pause(300);
-    })
-    .then(function() {
-        return prompt.print(['Please provide your full name:', ' ']);
-    })
-    .then(function() {
-        return prompt.getInput();
-    })
-    .then(function() {
-        return pause(300);
-    })
-    .then(function() {
-        var name = prompt.inputVals.name;
-        var first_name = name.split(' ')[0];
-        return prompt.print([' ', 'Hello ' + first_name + '.', ' ']);
-    })
-    .then(function() {
-        return prompt.print(['. . .'], 250);
-    }).
-    then(function() {
-        return prompt.print([' ', 'The following is a poem by Robert Nathan.', 'Please read it carefully...', ' ']);
-    })
-    .then(function() {
-        return prompt.print([
-            '_Beauty is ever to the lonely mind',
-            '_A shadow fleeting; she is never plain.',
-            '_She is a visitor who leaves behind',
-            '_The gift of grief, the souvenir of pain.'
-        ], 10);
-    })
-    .then(function() {
-        return prompt.print([' ', 'Do you feel that this poem accurately describes beauty despite it\'s brevity? [y/n]', ' ']);
-    })
-    .then(function() {
-        return prompt.getInput();
-    })
-    .then(function() {
-        return prompt.print([' ']);
-    })
-    .then(function() {
-        return prompt.print(['. . .'], 250);
-    })
-    .then(function() {
-        return prompt.print([' ', 'Black and Red would like to access your camera and microphone to enhance your experience on our interface',
-            'Would you allow us access? [y/n]', ' ']);
-    })
-    .then(function() {
-        return prompt.getInput();
-    })
-    .then(function() {
-        return prompt.print([' ', 'Let us begin . . .']);
-    });
+    prompt.print(['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod, lorem vitae condimentum pharetra, libero risus molestie elit, eget accumsan orci ipsum nec lacus. Praesent mattis felis vel mi aliquet, sed sollicitudin nibh hendrerit. Pellentesque tincidunt pretium est id tristique. Curabitur nec velit pharetra, tristique nisl eget, blandit ex. Vestibulum rhoncus elementum porttitor. Mauris tristique nibh eget volutpat gravida. Pellentesque fringilla enim sed orci sollicitudin varius. Donec egestas dui sed enim ultrices, quis molestie nisi rhoncus. Mauris non accumsan sapien, nec imperdiet justo. Etiam tempus tempor varius. Sed efficitur leo enim. Ut viverra ex cursus neque ornare, ac sollicitudin justo porttitor. Curabitur egestas in lectus a molestie. Proin mollis orci vel suscipit convallis. Praesent tincidunt hendrerit nibh, pulvinar vestibulum velit varius et. Nunc quis imperdiet nibh.', ' ',
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod, lorem vitae condimentum pharetra, libero risus molestie elit, eget accumsan orci ipsum nec lacus. Praesent mattis felis vel mi aliquet, sed sollicitudin nibh hendrerit. Pellentesque tincidunt pretium est id tristique. Curabitur nec velit pharetra, tristique nisl eget, blandit ex. Vestibulum rhoncus elementum porttitor. Mauris tristique nibh eget volutpat gravida. Pellentesque fringilla enim sed orci sollicitudin varius. Donec egestas dui sed enim ultrices, quis molestie nisi rhoncus. Mauris non accumsan sapien, nec imperdiet justo. Etiam tempus tempor varius. Sed efficitur leo enim. Ut viverra ex cursus neque ornare, ac sollicitudin justo porttitor. Curabitur egestas in lectus a molestie. Proin mollis orci vel suscipit convallis. Praesent tincidunt hendrerit nibh, pulvinar vestibulum velit varius et. Nunc quis imperdiet nibh.'], 3);
+
+    // prompt.print(['Welcome to Black and Red.', 'We are a group of talented web designers and developers with a knack for immaculate code.'])
+    // .then(function() {
+    //     return pause(500);
+    // })
+    // .then(function() {
+    //     return prompt.print([' ', 'If you are reading this sentence then you have already passed initial authorization.']);
+    // })
+    // .then(function() {
+    //     return pause(300);
+    // })
+    // .then(function() {
+    //     return prompt.print(['Please provide your full name:', ' ']);
+    // })
+    // .then(function() {
+    //     return prompt.getInput();
+    // })
+    // .then(function() {
+    //     return pause(300);
+    // })
+    // .then(function() {
+    //     var name = prompt.inputVals.name;
+    //     var first_name = name.split(' ')[0];
+    //     return prompt.print([' ', 'Hello ' + first_name + '.', ' ']);
+    // })
+    // .then(function() {
+    //     return prompt.print(['. . .'], 250);
+    // }).
+    // then(function() {
+    //     return prompt.print([' ', 'The following is a poem by Robert Nathan.', 'Please read it carefully...', ' ']);
+    // })
+    // .then(function() {
+    //     return prompt.print([
+    //         '_Beauty is ever to the lonely mind',
+    //         '_A shadow fleeting; she is never plain.',
+    //         '_She is a visitor who leaves behind',
+    //         '_The gift of grief, the souvenir of pain.'
+    //     ], 10);
+    // })
+    // .then(function() {
+    //     return prompt.print([' ', 'Do you feel that this poem accurately describes beauty despite it\'s brevity? [y/n]', ' ']);
+    // })
+    // .then(function() {
+    //     return prompt.getInput();
+    // })
+    // .then(function() {
+    //     return prompt.print([' ']);
+    // })
+    // .then(function() {
+    //     return prompt.print(['. . .'], 250);
+    // })
+    // .then(function() {
+    //     return prompt.print([' ', 'Black and Red would like to access your camera and microphone to enhance your experience on our interface',
+    //         'Would you allow us access? [y/n]', ' ']);
+    // })
+    // .then(function() {
+    //     return prompt.getInput();
+    // })
+    // .then(function() {
+    //     return prompt.print([' ', 'Let us begin . . .']);
+    // });
 
 });
