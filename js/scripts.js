@@ -3,26 +3,36 @@ $(function() {
     var prompt = {
 
         options: {
-            typeSpeed: 25,
+            typeSpeed: 15,
             distortionSpeed: 100
         },
 
         distortionChars: ['&#8709;', '&#8704;', '&#916;', '&#8364;', '&#915;', '&#174;', 'Z', 'X'],
         distorting: false,
 
-        input: true,
+        input: false,
         inputStr: '',
+        inputVals: {},
+
+        storyStep: 1, // NOTE: this is specific to the intro
 
         init: function() {
             this.distort();
-            this.initInput();
         },
 
-        initInput: function() {
+        getInput: function() {
+            var self = this;
+            return new Promise(function(resolve, reject) {
+                self.startInput(resolve);
+            });
+        },
+
+        startInput: function(resolve) {
             var self = this;
             window.onkeydown = function(e) {
 
                 if (!self.input) return false;
+                self.input = true;
 
                 var k = e.which || e.keyCode;
                 var cancel = false;
@@ -38,6 +48,7 @@ $(function() {
                     e.preventDefault();
                     if (k == 13) {
                         // enter command
+                        self.enterCommand(resolve);
                     } else if (k == 8) {
                         var input = $('.prompt .input');
                         var text = input.text();
@@ -54,6 +65,30 @@ $(function() {
                 }
 
             };
+        },
+
+        // NOTE: this contents of this function are specific to the intro
+        enterCommand: function(resolve) {
+            // TODO: check for null value
+            if (this.storyStep == 1) {
+                this.inputVals.name = this.inputStr;
+            }
+            if (this.storyStep == 2) {
+                if (this.inputStr == 'YES' || this.inputStr == 'Y') {
+                    this.inputVals.mood = "rain";
+                }
+                if (this.inputStr == 'NO' || this.inputStr == 'N') {
+                    this.inputVals.mood = "sun";
+                }
+            }
+            if (this.storyStep == 3) {
+            }
+            $('.prompt .input').remove();
+            $('.prompt').append('<div class="line output">' + this.inputStr + '</div>');
+            $('.prompt .output').last().css('color', 'white');
+            this.inputStr = '';
+            this.storyStep++;
+            resolve();
         },
 
         print: function(arr, speed) {
@@ -74,8 +109,8 @@ $(function() {
             if (!line) {
                 // print stack is done
                 prompt.distorting = false;
-                prompt.input = true;
                 $('.prompt').append('<div class="line input"></div>');
+                prompt.input = true;
                 if (!!prompt.inputStr) {
                     $('.input').text(prompt.inputStr);
                 }
@@ -94,7 +129,11 @@ $(function() {
             var i = 0;
             var printTimer = setInterval(function() {
                 var text = line.text();
-                line.text(text + letters[i]);
+                if (letters[i] == '_') {
+                    line.css('padding-left', '50px');
+                } else {
+                    line.text(text + letters[i]);
+                }
                 i++;
                 if (i === letters.length) {
                     line.removeClass('active');
@@ -143,24 +182,65 @@ $(function() {
 
     prompt.init();
 
-    prompt.print([
-        'Welcome to Black and Red.',
-        'We are a group of talented web designers and developers with a knack for immaculate code.'
-    ])
+    prompt.print(['Welcome to Black and Red.', 'We are a group of talented web designers and developers with a knack for immaculate code.'])
     .then(function() {
         return pause(500);
     })
     .then(function() {
-        return prompt.print([
-            ' ',
-            'If you are reading this sentence then you have already passed initial authorization.'
-        ]);
+        return prompt.print([' ', 'If you are reading this sentence then you have already passed initial authorization.']);
     })
     .then(function() {
         return pause(300);
     })
     .then(function() {
-        return prompt.print(['Please provide your full name:', ' '])
+        return prompt.print(['Please provide your full name:', ' ']);
+    })
+    .then(function() {
+        return prompt.getInput();
+    })
+    .then(function() {
+        return pause(300);
+    })
+    .then(function() {
+        var name = prompt.inputVals.name;
+        var first_name = name.split(' ')[0];
+        return prompt.print([' ', 'Hello ' + first_name + '.', ' ']);
+    })
+    .then(function() {
+        return prompt.print(['. . .'], 250);
+    }).
+    then(function() {
+        return prompt.print([' ', 'The following is a poem by Robert Nathan.', 'Please read it carefully...', ' ']);
+    })
+    .then(function() {
+        return prompt.print([
+            '_Beauty is ever to the lonely mind',
+            '_A shadow fleeting; she is never plain.',
+            '_She is a visitor who leaves behind',
+            '_The gift of grief, the souvenir of pain.'
+        ], 10);
+    })
+    .then(function() {
+        return prompt.print([' ', 'Do you feel that this poem accurately describes beauty despite it\'s brevity? [y/n]', ' ']);
+    })
+    .then(function() {
+        return prompt.getInput();
+    })
+    .then(function() {
+        return prompt.print([' ']);
+    })
+    .then(function() {
+        return prompt.print(['. . .'], 250);
+    })
+    .then(function() {
+        return prompt.print([' ', 'Black and Red would like to access your camera and microphone to enhance your experience on our interface',
+            'Would you allow us access? [y/n]', ' ']);
+    })
+    .then(function() {
+        return prompt.getInput();
+    })
+    .then(function() {
+        return prompt.print([' ', 'Let us begin . . .']);
     });
 
 });
